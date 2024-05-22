@@ -1,0 +1,470 @@
+[
+    {
+        "id": "a1b2b31b.65fe7",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false
+    },
+    {
+        "id": "3369c6c54b117f15",
+        "type": "mqtt in",
+        "z": "a1b2b31b.65fe7",
+        "name": "",
+        "topic": "val2",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "9637394d2b7e86d8",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 330,
+        "y": 280,
+        "wires": [
+            [
+                "c1385381616ef83f"
+            ]
+        ]
+    },
+    {
+        "id": "5e932897654bf0dc",
+        "type": "ui_chart",
+        "z": "a1b2b31b.65fe7",
+        "name": "",
+        "group": "4881a1ecdcb66ad1",
+        "order": 7,
+        "width": 12,
+        "height": 8,
+        "label": "Tiempo Real",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 730,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7261e68a1514afd6",
+        "type": "postgresql",
+        "z": "a1b2b31b.65fe7",
+        "name": "INSERT INTO",
+        "query": "INSERT INTO  \"SensorData\" VALUES ($1, $2);",
+        "postgreSQLConfig": "d6f3897d2842070e",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 740,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c1385381616ef83f",
+        "type": "function",
+        "z": "a1b2b31b.65fe7",
+        "name": "function 56",
+        "func": "var parts = msg.payload.split(',');\nvar value = parseFloat(parts[1]);\nmsg.params = [parts[0], value];\nmsg.payload = value\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 280,
+        "wires": [
+            [
+                "b685021b61d1fc35",
+                "7261e68a1514afd6",
+                "5e932897654bf0dc"
+            ]
+        ]
+    },
+    {
+        "id": "b685021b61d1fc35",
+        "type": "debug",
+        "z": "a1b2b31b.65fe7",
+        "name": "debug 11",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "params",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "d007b4e8f07b21a3",
+        "type": "join",
+        "z": "a1b2b31b.65fe7",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 490,
+        "y": 400,
+        "wires": [
+            [
+                "1093271f7921ed42"
+            ]
+        ]
+    },
+    {
+        "id": "29942ca6578f375d",
+        "type": "ui_date_picker",
+        "z": "a1b2b31b.65fe7",
+        "name": "",
+        "label": "Fecha_Inicial",
+        "group": "4881a1ecdcb66ad1",
+        "order": 4,
+        "width": 7,
+        "height": 1,
+        "passthru": true,
+        "topic": "idate",
+        "topicType": "str",
+        "className": "",
+        "x": 330,
+        "y": 380,
+        "wires": [
+            [
+                "d007b4e8f07b21a3"
+            ]
+        ]
+    },
+    {
+        "id": "c72dff8738d6908f",
+        "type": "ui_date_picker",
+        "z": "a1b2b31b.65fe7",
+        "name": "",
+        "label": "Fecha_Final",
+        "group": "4881a1ecdcb66ad1",
+        "order": 5,
+        "width": 6,
+        "height": 1,
+        "passthru": true,
+        "topic": "fdate",
+        "topicType": "str",
+        "className": "",
+        "x": 330,
+        "y": 420,
+        "wires": [
+            [
+                "d007b4e8f07b21a3"
+            ]
+        ]
+    },
+    {
+        "id": "1093271f7921ed42",
+        "type": "function",
+        "z": "a1b2b31b.65fe7",
+        "name": "function 57",
+        "func": "var idateMillis = msg.payload.idate;\nvar fdateMillis = msg.payload.fdate;\n\nvar idate = new Date(idateMillis)\n                .toISOString().slice(0, 10);\nvar fdate = new Date(fdateMillis)\n                .toISOString().slice(0, 10);\n\nmsg.params = [idate,fdate];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 650,
+        "y": 400,
+        "wires": [
+            [
+                "fbfd323f857776fe",
+                "79f95a33b234ee2a"
+            ]
+        ]
+    },
+    {
+        "id": "fbfd323f857776fe",
+        "type": "debug",
+        "z": "a1b2b31b.65fe7",
+        "name": "debug 12",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "params",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "a4dd20c8dbe9002f",
+        "type": "ui_text",
+        "z": "a1b2b31b.65fe7",
+        "group": "4881a1ecdcb66ad1",
+        "order": 2,
+        "width": 16,
+        "height": 1,
+        "name": "",
+        "label": "Rango de Fechas a Analizar",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "style": true,
+        "font": "",
+        "fontSize": "24",
+        "color": "#000000",
+        "x": 560,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "79f95a33b234ee2a",
+        "type": "postgresql",
+        "z": "a1b2b31b.65fe7",
+        "name": "SelectData_ByDate",
+        "query": "SELECT * \n FROM \"SensorData\"\n WHERE \"TimeStamp\" >= ($1) \n AND \"TimeStamp\" < ($2)  \n ORDER BY \"TimeStamp\";",
+        "postgreSQLConfig": "d6f3897d2842070e",
+        "split": false,
+        "rowsPerMsg": 1,
+        "outputs": 1,
+        "x": 850,
+        "y": 400,
+        "wires": [
+            [
+                "ac5f96374c50287a"
+            ]
+        ]
+    },
+    {
+        "id": "ac5f96374c50287a",
+        "type": "function",
+        "z": "a1b2b31b.65fe7",
+        "name": "function 58",
+        "func": "const datos = msg.payload;\nconst datosPorDia = {};\nconst labels = [], data = [], series = [];\nconst Lux = [];\n\n// Iterar sobre cada fila en los resultados\ndatos.forEach((fila) => {\n\n    // Obtener el nombre del día (sin la hora) de la fecha\n    const fecha = new Date(fila.TimeStamp);\n\n    // Formatear la fecha en formato \"dd/mm/aa\"\n    const dia = fecha.getDate().toString().padStart(2, '0');\n    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');\n    const anio = fecha.getFullYear().toString().slice(-2);\n    const claveDia = `${dia}/${mes}/${anio}`;\n\n    labels.push(claveDia)\n    Lux.push(fila.Data)\n});\n\nseries.push(\"Lux\");\ndata.push(Lux);\n\nconst datosJSON = {\n    \"labels\":labels,\n    \"data\":data,\n    \"series\":series\n};\n\n\n// Convertir el objeto JSON a una cadena JSON\nconst datosJSONString = JSON.stringify(datosJSON);\nmsg.payload = [datosJSON]\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1050,
+        "y": 400,
+        "wires": [
+            [
+                "d38f8294833808ac"
+            ]
+        ]
+    },
+    {
+        "id": "d38f8294833808ac",
+        "type": "ui_chart",
+        "z": "a1b2b31b.65fe7",
+        "name": "",
+        "group": "4881a1ecdcb66ad1",
+        "order": 8,
+        "width": 12,
+        "height": 8,
+        "label": "Base de Datos",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1240,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "055853f977eae00a",
+        "type": "remote-access",
+        "z": "a1b2b31b.65fe7",
+        "confignode": "7ab9813af8cda629",
+        "name": "",
+        "verbose": 0,
+        "x": 940,
+        "y": 280,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "3c7e9e70968abe56",
+        "type": "ui_spacer",
+        "z": "a1b2b31b.65fe7",
+        "name": "spacer",
+        "group": "4881a1ecdcb66ad1",
+        "order": 1,
+        "width": 8,
+        "height": 1
+    },
+    {
+        "id": "2251acbf02f97572",
+        "type": "ui_spacer",
+        "z": "a1b2b31b.65fe7",
+        "name": "spacer",
+        "group": "4881a1ecdcb66ad1",
+        "order": 3,
+        "width": 5,
+        "height": 1
+    },
+    {
+        "id": "8b4139fd311154fe",
+        "type": "ui_spacer",
+        "z": "a1b2b31b.65fe7",
+        "name": "spacer",
+        "group": "4881a1ecdcb66ad1",
+        "order": 6,
+        "width": 6,
+        "height": 1
+    },
+    {
+        "id": "9637394d2b7e86d8",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "broker.emqx.io",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "4881a1ecdcb66ad1",
+        "type": "ui_group",
+        "name": "Datos Relevantes",
+        "tab": "812de84bc923c772",
+        "order": 1,
+        "disp": true,
+        "width": 24,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "d6f3897d2842070e",
+        "type": "postgreSQLConfig",
+        "name": "LuxLogger",
+        "host": "127.0.0.1",
+        "hostFieldType": "str",
+        "port": "5432",
+        "portFieldType": "num",
+        "database": "LuxLogger",
+        "databaseFieldType": "str",
+        "ssl": "false",
+        "sslFieldType": "bool",
+        "applicationName": "",
+        "applicationNameType": "str",
+        "max": "10",
+        "maxFieldType": "num",
+        "idle": "1000",
+        "idleFieldType": "num",
+        "connectionTimeout": "10000",
+        "connectionTimeoutFieldType": "num",
+        "user": "postgres",
+        "userFieldType": "str",
+        "password": "postgres",
+        "passwordFieldType": "str"
+    },
+    {
+        "id": "7ab9813af8cda629",
+        "type": "remote-config",
+        "name": "Node-RED UI",
+        "host": "localhost",
+        "protocol": "http",
+        "port": "1880",
+        "baseurl": "/ui",
+        "instancehash": "m6jxxa0pvsihpk482ty5bwiqf2x3x0z9rz9vb9n1mu6yukgs56uqsmz47nergxff",
+        "server": "nodered03.remote-red.com",
+        "region": "us"
+    },
+    {
+        "id": "812de84bc923c772",
+        "type": "ui_tab",
+        "name": "Lux Logger",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]
